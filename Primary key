@@ -1,0 +1,23 @@
+CREATE TABLE students (
+    id INT PRIMARY KEY,
+    name VARCHAR(50),
+    marks INT
+);
+
+CREATE TABLE operation (
+    action VARCHAR(50),
+    action_time TIMESTAMP
+);
+
+CREATE TRIGGER statement_level_trigger
+AFTER INSERT ON students
+FOR EACH STATEMENT
+BEGIN
+    INSERT INTO operation (action, action_time)
+    VALUES (CONCAT('Student ', NEW.name, ' inserted'), NOW());
+END;
+
+INSERT INTO students (id, name, marks) VALUES (1, 'Niraj', 85);
+
+SELECT * FROM students;
+SELECT * FROM operation;
