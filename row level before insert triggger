@@ -38,8 +38,8 @@ VALUES (OLD.student_id, OLD.fees, NEW.fees);
 END $$
 
 INSERT INTO students (student_id, name, fees) VALUES
--> (1, 'Rahul', 20000.00),
--> (2, 'Priya', 25000.00);
+(1, 'Rahul', 20000.00),
+(2, 'Priya', 25000.00);
 
 UPDATE students SET fees = 26000 WHERE student_id = 1;
 SELECT * FROM fee_changes;
