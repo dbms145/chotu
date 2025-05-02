@@ -1,29 +1,46 @@
-CREATE TABLE Department (
-    DeptID INT PRIMARY KEY,
-    DeptName VARCHAR(50)
+CREATE TABLE EMPLOYEE (
+    ID INT PRIMARY KEY,
+    NAME VARCHAR(50),
+    AGE INT,
+    ADDRESS VARCHAR(100),
+    SALARY DECIMAL(10,2)
 );
 
-CREATE TABLE Employee (
-    EmpID INT PRIMARY KEY,
-    EmpName VARCHAR(50),
-    DeptID INT,
-    FOREIGN KEY (DeptID) REFERENCES Department(DeptID)
-);
+INSERT INTO EMPLOYEE (ID, NAME, AGE, ADDRESS, SALARY) VALUES
+(1, 'Ramesh', 32, 'Ahmedabad', 2000.00),
+(2, 'Khilan', 25, 'Delhi', 1500.00),
+(3, 'Kaushik', 23, 'Kota', 2000.00),
+(4, 'Chaitali', 25, 'Mumbai', 6500.00),
+(5, 'Hardik', 27, 'Bhopal', 8500.00),
+(6, 'Komal', 22, 'MP', 4500.00),
+(7, 'Muffy', 24, 'Indore', 10000.00);
+
+CREATE VIEW CUSTOMERS_VIEW AS
+SELECT name, age
+FROM CUSTOMERS;
+
+SELECT * FROM CUSTOMERS_VIEW;
+
+UPDATE CUSTOMERS_VIEW
+SET AGE = 35 WHERE name = 'Ramesh';
 
 
-INSERT INTO Department VALUES (1, 'HR');
-INSERT INTO Department VALUES (2, 'IT');
 
+Step 5: Creating a View from Multiple Tables
+CREATE TABLE Departments
+( DeptID INT PRIMARY KEY,
+DeptName VARCHAR(100) );
+CREATE TABLE Employees
+( EmpID INT PRIMARY KEY,
+EmpName VARCHAR(100),
+Salary INT,
+DeptID INT,
+FOREIGN KEY (DeptID) REFERENCES Departments(DeptID) );
 
-INSERT INTO Employee VALUES (101, 'Jivan', 1);
-INSERT INTO Employee VALUES (102, 'Akash', 2);
+----------------------------------------------------------------------------------------
 
+Creating a View from Multiple Tables
 
-CREATE VIEW EmpView AS
-SELECT EmpID, EmpName, DeptID
-FROM Employee;
-
-
-UPDATE EmpView
-SET EmpName = 'Jivan'
-WHERE EmpID = 101;
+CREATE VIEW DepartmentEmployees AS SELECT
+D.DeptName, E.EmpName, E.Salary
+FROM Employees E JOIN/(,) Departments D ON/(WHERE) E.DeptID = D.DeptID;
