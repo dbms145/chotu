@@ -1,46 +1,88 @@
-CREATE TABLE EMPLOYEE (
-    ID INT PRIMARY KEY,
-    NAME VARCHAR(50),
-    AGE INT,
-    ADDRESS VARCHAR(100),
-    SALARY DECIMAL(10,2)
-);
+#include <GL/glut.h>
+#include <cmath>  // For math functions
 
-INSERT INTO EMPLOYEE (ID, NAME, AGE, ADDRESS, SALARY) VALUES
-(1, 'Ramesh', 32, 'Ahmedabad', 2000.00),
-(2, 'Khilan', 25, 'Delhi', 1500.00),
-(3, 'Kaushik', 23, 'Kota', 2000.00),
-(4, 'Chaitali', 25, 'Mumbai', 6500.00),
-(5, 'Hardik', 27, 'Bhopal', 8500.00),
-(6, 'Komal', 22, 'MP', 4500.00),
-(7, 'Muffy', 24, 'Indore', 10000.00);
+int frameNumber = 0;
 
-CREATE VIEW CUSTOMERS_VIEW AS
-SELECT name, age
-FROM CUSTOMERS;
+// Function to draw a windmill
+void drawWindmill() {
+    // Draw the base (yellow)
+    glColor3f(1.0f, 1.0f, 0.0f);  // Yellow color
+    glBegin(GL_POLYGON);
+        glVertex2f(-0.05f, 0.0f);
+        glVertex2f(-0.05f, 3.0f);
+        glVertex2f( 0.05f, 3.0f);
+        glVertex2f( 0.05f, 0.0f);
+    glEnd();
 
-SELECT * FROM CUSTOMERS_VIEW;
+    // Move origin to top of the base
+    glTranslatef(0.0f, 3.0f, 0.0f);
 
-UPDATE CUSTOMERS_VIEW
-SET AGE = 35 WHERE name = 'Ramesh';
+    // Rotate the blades
+    glRotated(frameNumber * 4.0, 0.0, 0.0, 1.0);  // Rotate around Z-axis
 
+    // Draw 4 blades (red)
+    glColor3f(1.0f, 0.0f, 0.0f);  // Red color
+    for (int i = 0; i < 6; i++) {
+        glRotated(90, 0.0, 0.0, 1.0);  // Rotate each blade 90 degrees
+        glBegin(GL_POLYGON);
+            glVertex2f(0.0f,  0.0f);
+            glVertex2f(1.0f,  0.2f);
+            glVertex2f(1.0f, -0.2f);
+        glEnd();
+    }
+}
 
+// Display function - draws everything
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    glLoadIdentity();
 
-Step 5: Creating a View from Multiple Tables
-CREATE TABLE Departments
-( DeptID INT PRIMARY KEY,
-DeptName VARCHAR(100) );
-CREATE TABLE Employees
-( EmpID INT PRIMARY KEY,
-EmpName VARCHAR(100),
-Salary INT,
-DeptID INT,
-FOREIGN KEY (DeptID) REFERENCES Departments(DeptID) );
+    // First windmill
+    glPushMatrix();
+    glTranslatef(2.2f, 1.6f, 0.0f);
+    glScalef(0.4f, 0.4f, 1.0f);
+    drawWindmill();
+    glPopMatrix();
 
-----------------------------------------------------------------------------------------
+    // Second windmill
+    glPushMatrix();
+    glTranslatef(3.7f, 0.8f, 0.0f);
+    glScalef(0.7f, 0.7f, 1.0f);
+    drawWindmill();
+    glPopMatrix();
 
-Creating a View from Multiple Tables
+    glutSwapBuffers();
+}
 
-CREATE VIEW DepartmentEmployees AS SELECT
-D.DeptName, E.EmpName, E.Salary
-FROM Employees E JOIN/(,) Departments D ON/(WHERE) E.DeptID = D.DeptID;
+// Called every few milliseconds to update the frame
+    void doFrame(int v) {
+    frameNumber++;                      // Increase frame count
+    glutPostRedisplay();                // Redraw the screen
+    glutTimerFunc(10, doFrame, 0);      // Call again after 10 ms
+}
+
+// Initialization function
+    void init() {
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);  // Black background
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0, 7.0, -1.0, 4.0, -1.0, 1.0);  // Set coordinate range
+    glMatrixMode(GL_MODELVIEW);
+}
+
+// Main function
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE);
+    glutInitWindowSize(700, 500);             // Window size
+    glutInitWindowPosition(100, 100);         // Window position
+    glutCreateWindow("Windmill Animation");   // Window title
+
+    init();                                   // Initialize OpenGL
+    glutDisplayFunc(display);                 // Set display function
+    glutTimerFunc(200, doFrame, 0);           // Start animation
+    glutMainLoop();                           // Start event loop
+
+    return 0;
+}
