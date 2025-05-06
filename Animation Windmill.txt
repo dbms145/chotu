@@ -1,5 +1,5 @@
 #include <GL/glut.h>
-#include <cmath>  // For math functions
+#include <cmath>  
 
 int frameNumber = 0;
 
